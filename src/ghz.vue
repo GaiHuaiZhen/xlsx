@@ -2,7 +2,8 @@
     <div>
      
 
-
+ <input type="file" v-on:change="sendfile($event.target)" />
+        <div id="zzdemo"></div>
 <div v-on:click="hh">
     前端导出xlsx
 </div>
@@ -15,7 +16,7 @@ export default {
     data() {
         return {
              tableData: '', 
-        tableHeader: '' 
+            tableHeader: '' 
         }
     },
      methods: {
@@ -34,8 +35,29 @@ var new_workbook = XLSX.utils.book_new();
 
 
 
-}
+},
 //显示文件～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+     sendfile(obj) {
+                 var zzexcel;
+                console.log(obj)
+                
+                if(!obj.files) {
+                    
+                    return;
+                }
+                var f = obj.files[0];
+                var reader = new FileReader();
+                reader.readAsBinaryString(f);
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                        zzexcel = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                    for(var i=0;i<zzexcel.SheetNames.length;i++){
+            　　　　　　document.getElementById("zzdemo").innerHTML +=zzexcel.SheetNames[i]+"="+JSON.stringify(XLSX.utils.sheet_to_json(zzexcel.Sheets[zzexcel.SheetNames[i]]))+"<br/>";
+        　　　　　　}
+                }
+            }
 
     },
     mounted() {
@@ -65,6 +87,18 @@ var new_workbook = XLSX.utils.book_new();
 //           /* excel转换json数组,加上{header:1}是普通数组，不写是对象数组 */
 //           self.data = XLSX.utils.sheet_to_json(ws);
 //           console.log(self.data);}
+
+
+
+
+
+
+        
+
+
+
+
+
 
 
 }
